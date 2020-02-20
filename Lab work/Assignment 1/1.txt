@@ -1,0 +1,303 @@
+MariaDB [employees]> insert into employee values(
+    ->     111, '24/10/98', 'Mubariz', 'Saad',
+    ->     'M', '23-12-2132'
+    -> );
+ERROR 1146 (42S02): Table 'employees.employee' doesn't exist
+MariaDB [employees]> insert into employees values(
+    ->     111, '24/10/98', 'Mubariz', 'Saad',
+    ->     'M', '23-12-2132'
+    -> );
+Query OK, 1 row affected, 2 warnings (0.013 sec)
+
+MariaDB [employees]> insert into employees values(
+    ->     121, '4/10/08', 'Ali', 'Mehdi',
+    ->     'M', '2-2-2002'
+    -> );
+Query OK, 1 row affected, 1 warning (0.006 sec)
+
+MariaDB [employees]> insert into employees values(
+    ->     101, '24/10/98', 'Muhammad', 'fahad',
+    ->     'M', '23-10-2012'
+    -> );
+Query OK, 1 row affected, 2 warnings (0.006 sec)
+
+MariaDB [employees]> 
+MariaDB [employees]> insert into employees values(
+    ->     131, '24/10/98', 'Mubariz', 'Saad',
+    ->     'M', '23-12-2132'
+    -> );
+Query OK, 1 row affected, 2 warnings (0.004 sec)
+
+MariaDB [employees]> 
+MariaDB [employees]> insert into employees values(
+    ->     141, '24/10/98', 'Fatima', 'N',
+    ->     'M', '23-02-1996'
+    -> );
+Query OK, 1 row affected, 2 warnings (0.005 sec)
+
+MariaDB [employees]> insert into departments values(
+    ->     001, 'Security'
+    -> );
+Query OK, 1 row affected (0.008 sec)
+
+MariaDB [employees]> 
+MariaDB [employees]> insert into departments values(
+    ->     002, 'RnD'
+    -> );
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [employees]> 
+MariaDB [employees]> insert into departments values(
+    ->     003, 'Solar'
+    -> );
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [employees]> 
+MariaDB [employees]> insert into departments values(
+    ->     004, 'Hydral'
+    -> );
+Query OK, 1 row affected (0.004 sec)
+
+MariaDB [employees]> insert into dept_emp(
+    ->     111, 001, '2-10-2019', '2-10-2020'
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '111, 001, '2-10-2019', '2-10-2020'
+)' at line 2
+MariaDB [employees]> insert into dept_emp(
+    ->     111, 001, '2-10-2019', '2-10-2020'
+    -> 
+    -> insert into dept_emp(
+    ->     111, 001, '2-10-2019', '2-10-2020'
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '111, 001, '2-10-2019', '2-10-2020'
+
+insert into dept_emp(
+    111, 001, '2-10-20' at line 2
+MariaDB [employees]> insert into dept_emp(
+    ->     111, 001, '2-10-2019', '2-10-2020'
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '111, 001, '2-10-2019', '2-10-2020'
+)' at line 2
+MariaDB [employees]> insert into dept_emp values (
+    ->     111, 001, '2-10-2019', '2-10-2020'
+    -> );
+Query OK, 1 row affected, 2 warnings (0.004 sec)
+
+MariaDB [employees]> insert into dept_emp values (
+    ->     121, 002, '2-20-2016', '12-02-2019'
+    -> );
+Query OK, 1 row affected, 2 warnings (0.004 sec)
+
+MariaDB [employees]> 
+MariaDB [employees]> 
+MariaDB [employees]> insert into dept_emp values (
+    ->     131, 003, '2-08-2015', '01-22-2019'
+    -> );
+Query OK, 1 row affected, 2 warnings (0.004 sec)
+
+MariaDB [employees]> 
+MariaDB [employees]> insert into dept_emp values(
+    ->     141, 004, '5-23-2003', '12-31-2043'
+    -> );
+Query OK, 1 row affected, 2 warnings (0.009 sec)
+
+MariaDB [employees]> show tables;
++---------------------+
+| Tables_in_employees |
++---------------------+
+| departments         |
+| dept_emp            |
+| dept_manager        |
+| employees           |
+| salaries            |
+| titles              |
++---------------------+
+6 rows in set (0.001 sec)
+
+MariaDB [employees]> show * from employees;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '* from employees' at line 1
+MariaDB [employees]> select * from employees;
++--------+------------+------------+-----------+--------+------------+
+| emp_no | birth_date | first_name | last_name | gender | hire_date  |
++--------+------------+------------+-----------+--------+------------+
+|    101 | 0000-00-00 | Muhammad   | fahad     | M      | 0000-00-00 |
+|    111 | 0000-00-00 | Mubariz    | Saad      | M      | 0000-00-00 |
+|    121 | 0004-10-08 | Ali        | Mehdi     | M      | 0000-00-00 |
+|    131 | 0000-00-00 | Mubariz    | Saad      | M      | 0000-00-00 |
+|    141 | 0000-00-00 | Fatima     | N         | M      | 0000-00-00 |
++--------+------------+------------+-----------+--------+------------+
+5 rows in set (0.000 sec)
+
+MariaDB [employees]> INSERT into salaries values(
+    ->     101, 23000, '0', '0'
+    -> );
+Query OK, 1 row affected, 2 warnings (0.006 sec)
+
+MariaDB [employees]> select * from salaries;
++--------+--------+------------+------------+
+| emp_no | salary | from_date  | to_date    |
++--------+--------+------------+------------+
+|    101 |  23000 | 0000-00-00 | 0000-00-00 |
++--------+--------+------------+------------+
+1 row in set (0.000 sec)
+
+MariaDB [employees]> INSERT into salaries values(
+    ->     111, 293000, '0', '0'
+    -> );
+Query OK, 1 row affected, 2 warnings (0.004 sec)
+
+MariaDB [employees]> 
+MariaDB [employees]> INSERT into salaries values(
+    ->     121, 232000, '0', '0'
+    -> );
+Query OK, 1 row affected, 2 warnings (0.004 sec)
+
+MariaDB [employees]> 
+MariaDB [employees]> INSERT into salaries values(
+    ->     131, 13000, '0', '0'
+    -> );
+Query OK, 1 row affected, 2 warnings (0.004 sec)
+
+MariaDB [employees]> 
+MariaDB [employees]> insert into titles values(
+    ->     121, 'Chairman', '0', '0'
+    -> );
+Query OK, 1 row affected, 2 warnings (0.007 sec)
+
+MariaDB [employees]> 
+MariaDB [employees]> insert into titles values(
+    ->     131, 'CEO', '0', '0'
+    -> );
+Query OK, 1 row affected, 2 warnings (0.004 sec)
+
+MariaDB [employees]> 
+MariaDB [employees]> insert into titles values(
+    ->     141, 'CFO', '0', '0'
+    -> );
+Query OK, 1 row affected, 2 warnings (0.005 sec)
+
+MariaDB [employees]> 
+MariaDB [employees]> update dept_emp
+    -> set dept_no = 004
+    -> where emp_no = 141;
+Query OK, 0 rows affected (0.004 sec)
+Rows matched: 1  Changed: 0  Warnings: 0
+
+MariaDB [employees]> 
+MariaDB [employees]> update dept_emp
+    -> set dept_no = 004
+    -> where emp_no = 131;
+Query OK, 1 row affected (0.006 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [employees]> 
+MariaDB [employees]> update salaries
+    -> set salary = 999999
+    -> where emp_no = 131;
+Query OK, 1 row affected (0.006 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [employees]> 
+MariaDB [employees]> update departments
+    -> set dept_name = 'new_name'
+    -> where dept_name = 'RnD';
+Query OK, 1 row affected (0.006 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [employees]> 
+MariaDB [employees]> update titles
+    -> set title = 'King'
+    -> where title = 'CFO';
+Query OK, 1 row affected (0.006 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [employees]> 
+MariaDB [employees]> UPDATE employees
+    -> set hire_date = '2-11-2016'
+    -> where hiredate = '0';
+ERROR 1054 (42S22): Unknown column 'hiredate' in 'where clause'
+MariaDB [employees]> 
+MariaDB [employees]> UPDATE employees
+    -> set hire_date = '2-11-2016'
+    -> where hire_date = '0';
+Query OK, 0 rows affected, 6 warnings (0.002 sec)
+Rows matched: 5  Changed: 0  Warnings: 6
+
+MariaDB [employees]> 
+MariaDB [employees]> UPDATE employees
+    -> set hire_date = '2-11-2016'
+    -> where hire_date = '00-00-0000';
+Query OK, 0 rows affected, 5 warnings (0.000 sec)
+Rows matched: 5  Changed: 0  Warnings: 5
+
+MariaDB [employees]> select * from salaries;
++--------+--------+------------+------------+
+| emp_no | salary | from_date  | to_date    |
++--------+--------+------------+------------+
+|    101 |  23000 | 0000-00-00 | 0000-00-00 |
+|    111 | 293000 | 0000-00-00 | 0000-00-00 |
+|    121 | 232000 | 0000-00-00 | 0000-00-00 |
+|    131 | 999999 | 0000-00-00 | 0000-00-00 |
++--------+--------+------------+------------+
+4 rows in set (0.000 sec)
+
+MariaDB [employees]> select * from employees;
++--------+------------+------------+-----------+--------+------------+
+| emp_no | birth_date | first_name | last_name | gender | hire_date  |
++--------+------------+------------+-----------+--------+------------+
+|    101 | 0000-00-00 | Muhammad   | fahad     | M      | 0000-00-00 |
+|    111 | 0000-00-00 | Mubariz    | Saad      | M      | 0000-00-00 |
+|    121 | 0004-10-08 | Ali        | Mehdi     | M      | 0000-00-00 |
+|    131 | 0000-00-00 | Mubariz    | Saad      | M      | 0000-00-00 |
+|    141 | 0000-00-00 | Fatima     | N         | M      | 0000-00-00 |
++--------+------------+------------+-----------+--------+------------+
+5 rows in set (0.000 sec)
+
+MariaDB [employees]> 
+MariaDB [employees]> UPDATE employees
+    -> set hire_date = '2-11-2016'
+    -> where hire_date = '0000-00-00';
+Query OK, 0 rows affected, 5 warnings (0.000 sec)
+Rows matched: 5  Changed: 0  Warnings: 5
+
+MariaDB [employees]> 
+MariaDB [employees]> UPDATE employees
+    -> set hire_date = '2012-11-16'
+    -> where hire_date = '0000-00-00';
+Query OK, 5 rows affected (0.004 sec)
+Rows matched: 5  Changed: 5  Warnings: 0
+
+MariaDB [employees]> 
+MariaDB [employees]> DELETE from employees
+    -> where hire_date < '2012-11-16';
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [employees]> 
+MariaDB [employees]> DELETE from employees
+    -> where Year(hire_date) like '%2012-11-16';
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [employees]> 
+MariaDB [employees]> DELETE from employees
+    -> where Year(hire_date) like '%2016';
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [employees]> where Year(hire_date) like '2016%;
+    '> DELETE from employees
+    '> where Year(hire_date) like '%2016';
+    '> 
+    '> 
+    '> DELETE from employees
+    '> where Year(hire_date) like '2016%';
+    '> 
+    '> 
+    '> 
+    '> ;
+    '> delete from departments;
+    '> 
+    '> 
+    '> 
+    '> 
+    '> 
+    '> 
+    '> 
