@@ -1,0 +1,89 @@
+MariaDB [dbclass]>     empno numeric(4),
+    ->     ename varchar (10) not null,
+    ->     job varchar (9),
+    ->     mgr numeric(4),
+    ->     hiredate date,
+    ->     sal numeric(7,2),
+    ->     comm numeric(7,2),
+    ->     deptno numeric(2) not null,
+    ->     constraint emp_deptno_fk foreign key (deptno) references dept (deptno)
+    -> 
+    -> 
+    -> insert into emp(empno, ename, job, mgr, hiredate, sal, comm, deptno) VALUES
+    -> (
+    ->     7839, 'KING', 'President',NULL, '17-NOV-81', 5000, NULL, 10
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'empno numeric(4),
+    ename varchar (10) not null,
+    job varchar (9),
+    mgr ' at line 1
+MariaDB [dbclass]> insert into emp(empno, ename, job, mgr, hiredate, sal, comm, deptno) VALUES
+    -> (
+    ->     7839, 'KING', 'President', '17-NOV-81', 5000,  10
+    -> );
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+MariaDB [dbclass]> insert into emp(empno, ename, job, mgr, hiredate, sal, comm, deptno) VALUES
+    -> (
+    ->     7839, 'KING', 'President','None', '17-NOV-81', 5000,0,  10
+    -> );
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`dbclass`.`emp`, CONSTRAINT `emp_deptno_fk` FOREIGN KEY (`deptno`) REFERENCES `dept` (`deptno`))
+MariaDB [dbclass]> show tables;
++-------------------+
+| Tables_in_dbclass |
++-------------------+
+| dept              |
+| emp               |
++-------------------+
+2 rows in set (0.001 sec)
+
+MariaDB [dbclass]> select * from emp;
+Empty set (0.000 sec)
+
+MariaDB [dbclass]> 
+MariaDB [dbclass]> insert into dept(deptno, dname, loc) VALUES
+    -> (
+    ->     10, 'Accounting', 'New York'
+    -> );
+Query OK, 1 row affected (0.008 sec)
+
+MariaDB [dbclass]> insert into emp(empno, ename, job, mgr, hiredate, sal, comm, deptno) VALUES
+    -> (
+    ->     7839, 'KING', 'President','None', '17-NOV-81', 5000,0,  10
+    -> );
+Query OK, 1 row affected, 2 warnings (0.005 sec)
+
+MariaDB [dbclass]> insert into emp(empno, ename, job, mgr, hiredate, sal, comm, deptno) VALUES
+    -> (
+    ->     7839, 'KING', 'President','None', '17-NOV-81', 5000,0,  10
+    -> 
+    -> 
+    -> insert into dept(deptno, dname, loc) VALUES
+    -> (
+    ->     20, 'Research', 'Dallas'
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'insert into dept(deptno, dname, loc) VALUES
+(
+    20, 'Research', 'Dallas'
+)' at line 6
+MariaDB [dbclass]> 
+MariaDB [dbclass]> insert into dept(deptno, dname, loc) VALUES
+    -> (
+    ->     30, 'Sales', 'Chicago'
+    -> );
+Query OK, 1 row affected (0.005 sec)
+
+MariaDB [dbclass]> insert into dept(deptno, dname, loc) VALUES
+    -> (
+    ->     20, 'Research', 'Dallas'
+    -> );
+Query OK, 1 row affected (0.005 sec)
+
+MariaDB [dbclass]> select * from dept where loc = 'Dallas';
++--------+----------+--------+
+| deptno | dname    | loc    |
++--------+----------+--------+
+|     20 | Research | Dallas |
++--------+----------+--------+
+1 row in set (0.004 sec)
+
+MariaDB [dbclass]> tee E:\Current Semester\Database Systems\Practice\Dept\emp.sql
