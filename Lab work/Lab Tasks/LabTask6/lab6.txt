@@ -1,0 +1,459 @@
+MariaDB [themepark]> select * from attraction;
++------------+-----------------+-------------+------------------+-----------+
+| ATTRACT_NO | ATTRACT_NAME    | ATTRACT_AGE | attract_capacity | PARK_CODE |
++------------+-----------------+-------------+------------------+-----------+
+|      10034 | ThunderCoaster  |          11 |               34 | FR1001    |
+|      10056 | SpinningTeacups |           4 |               62 | FR1001    |
+|      10067 | FlightToStars   |          11 |               24 | FR1001    |
+|      10078 | Ant-Trap        |          23 |               30 | FR1001    |
+|      10082 | NULL            |          10 |               40 | ZA1342    |
+|      10098 | Carnival        |           3 |              120 | FR1001    |
+|      20056 | 3D-Lego_Show    |           3 |              200 | UK3452    |
+|      30011 | BlackHole2      |          12 |               34 | UK3452    |
+|      30012 | Pirates         |          10 |               42 | UK3452    |
+|      30044 | UnderSeaWord    |           4 |               80 | UK3452    |
+|      98764 | GoldRush        |           5 |               80 | ZA1342    |
++------------+-----------------+-------------+------------------+-----------+
+11 rows in set (0.044 sec)
+
+MariaDB [themepark]> select * from employee;
++---------+-----------+------------+-----------+------------+---------------+---------------+-----------+-----------+
+| EMP_NUM | EMP_TITLE | EMP_LNAME  | EMP_FNAME | EMP_DOB    | EMP_HIRE_DATE | EMP_AREA_CODE | EMP_PHONE | PARK_CODE |
++---------+-----------+------------+-----------+------------+---------------+---------------+-----------+-----------+
+|     100 | Ms        | Calderdale | Emma      | 1972-06-15 | 1992-03-15    | 0181          | 324-9134  | FR1001    |
+|     101 | Ms        | Ricardo    | Marshel   | 1978-03-19 | 1996-04-25    | 0181          | 324-4472  | UK3452    |
+|     102 | Mr        | Arshad     | Arif      | 1969-11-14 | 1990-12-20    | 7253          | 675-8993  | FR1001    |
+|     103 | Ms        | Roberts    | Anne      | 1974-10-16 | 1994-08-16    | 0181          | 898-3456  | UK3452    |
+|     104 | Mr        | Denver     | Enrica    | 1980-11-08 | 2001-10-20    | 7253          | 504-4434  | ZA1342    |
+|     105 | Ms        | Namowa     | Mirrelle  | 1990-03-14 | 2006-11-08    | 0181          | 890-3243  | FR1001    |
+|     106 | Mrs       | Smith      | Gemma     | 1968-02-12 | 1989-01-05    | 0181          | 324-7845  | ZA1342    |
++---------+-----------+------------+-----------+------------+---------------+---------------+-----------+-----------+
+7 rows in set (0.026 sec)
+
+MariaDB [themepark]> select * from hours;
++---------+------------+-------------------+-----------+-------------+
+| EMP_NUM | ATTRACT_NO | HOURS_PER_ATTRACT | HOUR_RATE | DATE_WORKED |
++---------+------------+-------------------+-----------+-------------+
+|     100 |      10034 |                 6 |      6.50 | 2007-05-18  |
+|     100 |      10034 |                 6 |      6.50 | 2007-05-20  |
+|     101 |      10034 |                 6 |      6.50 | 2007-05-18  |
+|     102 |      30012 |                 3 |      5.99 | 2007-05-23  |
+|     102 |      30044 |                 6 |      5.99 | 2007-05-21  |
+|     102 |      30044 |                 3 |      5.99 | 2007-05-22  |
+|     104 |      30011 |                 6 |      7.20 | 2007-05-21  |
+|     104 |      30012 |                 6 |      7.20 | 2007-05-22  |
+|     105 |      10078 |                 3 |      8.50 | 2007-05-18  |
+|     105 |      10098 |                 3 |      8.50 | 2007-05-18  |
+|     105 |      10098 |                 6 |      8.50 | 2007-05-19  |
++---------+------------+-------------------+-----------+-------------+
+11 rows in set (0.014 sec)
+
+MariaDB [themepark]> select concat(emp_fname, emp_lname)
+    -> from employee natural join HOURS
+    -> where hours_per_attract > avg(hours_per_attract)
+    -> where date_worked > '%-05';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'where date_worked > '%-05'' at line 4
+MariaDB [themepark]> select concat(emp_fname, emp_lname)
+    -> from employee natural join HOURS
+    -> where hours_per_attract > avg(hours_per_attract);
+ERROR 1111 (HY000): Invalid use of group function
+MariaDB [themepark]> select distinct emp_fname, emp_lname
+    -> from employee natural join hours
+    -> where hour_rate > select avg(hour_rate) from hours and date_worked = '%2007-05%';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'select avg(hour_rate) from hours and date_worked = '%2007-05%'' at line 3
+MariaDB [themepark]> select distinct emp_fname, emp_lname
+    -> from employee natural join hours
+    -> where hour_rate > select avg(hour_rate) from hours and date_worked like '%2007-05%';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'select avg(hour_rate) from hours and date_worked like '%2007-05%'' at line 3
+MariaDB [themepark]> select distinct emp_fname, emp_lname
+    -> from employee natural join hours
+    -> where hour_rate > (select avg(hour_rate) from hours) and date_worked like '%2007-05%';
++-----------+-----------+
+| emp_fname | emp_lname |
++-----------+-----------+
+| Enrica    | Denver    |
+| Mirrelle  | Namowa    |
++-----------+-----------+
+2 rows in set (0.005 sec)
+
+MariaDB [themepark]> select * from themeparks;
+ERROR 1146 (42S02): Table 'themepark.themeparks' doesn't exist
+MariaDB [themepark]> show tables;
++---------------------+
+| Tables_in_themepark |
++---------------------+
+| attraction          |
+| employee            |
+| hours               |
+| sales               |
+| sales_line          |
+| themepark           |
+| ticket              |
++---------------------+
+7 rows in set (0.001 sec)
+
+MariaDB [themepark]> select * from themepark;
++-----------+---------------+--------------+--------------+
+| PARK_CODE | PARK_NAME     | PARK_CITY    | PARK_COUNTRY |
++-----------+---------------+--------------+--------------+
+| FR1001    | FairyLand     | PARIS        | FR           |
+| NL1202    | Efling        | NOORD        | NL           |
+| SP4533    | AdventurePort | BARCELONA    | SP           |
+| SW2323    | Labyrinthe    | LAUSANNE     | SW           |
+| UK2622    | MiniLand      | WINDSOR      | UK           |
+| UK3452    | PleasureLand  | STOKE        | UK           |
+| ZA1342    | GoldTown      | JOHANNESBURG | ZA           |
++-----------+---------------+--------------+--------------+
+7 rows in set (0.058 sec)
+
+MariaDB [themepark]> select * from ticket;
++-----------+--------------+-------------+-----------+
+| TICKET_NO | TICKET_PRICE | TICKET_TYPE | PARK_CODE |
++-----------+--------------+-------------+-----------+
+|     11001 |        24.99 | Adult       | SP4533    |
+|     11002 |        14.99 | Child       | SP4533    |
+|     11003 |        10.99 | Senior      | SP4533    |
+|     13001 |        18.99 | Child       | FR1001    |
+|     13002 |        34.99 | Adult       | FR1001    |
+|     13003 |        20.99 | Senior      | FR1001    |
+|     67832 |        18.56 | Child       | ZA1342    |
+|     67833 |        28.67 | Adult       | ZA1342    |
+|     67855 |        12.12 | Senior      | ZA1342    |
+|     88567 |        22.50 | Child       | UK3452    |
+|     88568 |        42.10 | Adult       | UK3452    |
+|     89720 |        10.99 | Senior      | UK3452    |
++-----------+--------------+-------------+-----------+
+12 rows in set (0.012 sec)
+
+MariaDB [themepark]> 
+MariaDB [themepark]> select park_code, park_name
+    -> from themepark natural join ticket 
+    -> group by park_code having ticket_price > avg(ticket_price);
+ERROR 1054 (42S22): Unknown column 'ticket_price' in 'having clause'
+MariaDB [themepark]> select park_code, park_name
+    -> from themepark natural join ticket 
+    -> group by park_code having ticket.ticket_price > avg(ticket.ticket_price);
+ERROR 1054 (42S22): Unknown column 'ticket.ticket_price' in 'having clause'
+MariaDB [themepark]> select park_code, park_name
+    -> from themepark natural join ticket 
+    -> group by park_code 
+    -> having ticket_price > ( select avg(ticket_price) from ticket);
+ERROR 1054 (42S22): Unknown column 'ticket_price' in 'having clause'
+MariaDB [themepark]> select park_code, park_name
+    -> from themepark natural join ticket 
+    -> group by park_code 
+    -> having ticket.ticket_price > ( select avg(ticket_price) from ticket);
+ERROR 1054 (42S22): Unknown column 'ticket.ticket_price' in 'having clause'
+MariaDB [themepark]> select park_code, park_name
+    -> from themepark natural join ticket 
+    -> group by park_code 
+    -> where ticket_price from ticket > ( select avg(ticket_price) from ticket);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'where ticket_price from ticket > ( select avg(ticket_price) from ticket)' at line 4
+MariaDB [themepark]> select park_code, park_name
+    -> from themepark join ticket 
+    -> group by park_code 
+    -> where ticket_price > ( select avg(ticket_price) from ticket);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'where ticket_price > ( select avg(ticket_price) from ticket)' at line 4
+MariaDB [themepark]> select park_code, park_name
+    -> from themepark natural join ticket 
+    -> where ticket_price > ( select avg(ticket_price) from ticket);
++-----------+---------------+
+| park_code | park_name     |
++-----------+---------------+
+| FR1001    | FairyLand     |
+| SP4533    | AdventurePort |
+| UK3452    | PleasureLand  |
+| UK3452    | PleasureLand  |
+| ZA1342    | GoldTown      |
++-----------+---------------+
+5 rows in set (0.003 sec)
+
+MariaDB [themepark]> select  emp_fname, emp_lname , (date_worked) ,
+    -> (select avg(hours_per_attract) from hours) as AVERAGE , 
+    -> hours_per_attract - (select avg(hours_per_attract) from hours)  as DIFFERENCE from employee natural join hours;
++-----------+------------+-------------+---------+------------+
+| emp_fname | emp_lname  | date_worked | AVERAGE | DIFFERENCE |
++-----------+------------+-------------+---------+------------+
+| Emma      | Calderdale | 2007-05-18  |  4.9091 |     1.0909 |
+| Emma      | Calderdale | 2007-05-20  |  4.9091 |     1.0909 |
+| Marshel   | Ricardo    | 2007-05-18  |  4.9091 |     1.0909 |
+| Arif      | Arshad     | 2007-05-23  |  4.9091 |    -1.9091 |
+| Arif      | Arshad     | 2007-05-21  |  4.9091 |     1.0909 |
+| Arif      | Arshad     | 2007-05-22  |  4.9091 |    -1.9091 |
+| Enrica    | Denver     | 2007-05-21  |  4.9091 |     1.0909 |
+| Enrica    | Denver     | 2007-05-22  |  4.9091 |     1.0909 |
+| Mirrelle  | Namowa     | 2007-05-18  |  4.9091 |    -1.9091 |
+| Mirrelle  | Namowa     | 2007-05-18  |  4.9091 |    -1.9091 |
+| Mirrelle  | Namowa     | 2007-05-19  |  4.9091 |     1.0909 |
++-----------+------------+-------------+---------+------------+
+11 rows in set (0.003 sec)
+
+MariaDB [themepark]> SELECT  PARK_CODE, PARK_NAME, PARK_COUNTRY FROM  THEMEPARK WHERE  EXISTS (SELECT PARK_CODE FROM SALES WHERE          SALES.PARK_CODE          =          THEMEPARK.PARK_CODE);
++-----------+--------------+--------------+
+| PARK_CODE | PARK_NAME    | PARK_COUNTRY |
++-----------+--------------+--------------+
+| FR1001    | FairyLand    | FR           |
+| UK3452    | PleasureLand | UK           |
+| ZA1342    | GoldTown     | ZA           |
++-----------+--------------+--------------+
+3 rows in set (0.016 sec)
+
+MariaDB [themepark]> select * from sales;
++----------------+-----------+------------+
+| TRANSACTION_NO | PARK_CODE | SALE_DATE  |
++----------------+-----------+------------+
+|          12781 | FR1001    | 2007-05-18 |
+|          12782 | FR1001    | 2007-05-18 |
+|          12783 | FR1001    | 2007-05-18 |
+|          12784 | FR1001    | 2007-05-18 |
+|          12785 | FR1001    | 2007-05-18 |
+|          12786 | FR1001    | 2007-05-18 |
+|          34534 | UK3452    | 2007-05-18 |
+|          34535 | UK3452    | 2007-05-18 |
+|          34536 | UK3452    | 2007-05-18 |
+|          34537 | UK3452    | 2007-05-18 |
+|          34538 | UK3452    | 2007-05-18 |
+|          34539 | UK3452    | 2007-05-18 |
+|          34540 | UK3452    | 2007-05-18 |
+|          34541 | UK3452    | 2007-05-18 |
+|          67589 | ZA1342    | 2007-05-18 |
+|          67590 | ZA1342    | 2007-05-18 |
+|          67591 | ZA1342    | 2007-05-18 |
+|          67592 | ZA1342    | 2007-05-18 |
+|          67593 | ZA1342    | 2007-05-18 |
++----------------+-----------+------------+
+19 rows in set (0.000 sec)
+
+MariaDB [themepark]> select * from themepark;
++-----------+---------------+--------------+--------------+
+| PARK_CODE | PARK_NAME     | PARK_CITY    | PARK_COUNTRY |
++-----------+---------------+--------------+--------------+
+| FR1001    | FairyLand     | PARIS        | FR           |
+| NL1202    | Efling        | NOORD        | NL           |
+| SP4533    | AdventurePort | BARCELONA    | SP           |
+| SW2323    | Labyrinthe    | LAUSANNE     | SW           |
+| UK2622    | MiniLand      | WINDSOR      | UK           |
+| UK3452    | PleasureLand  | STOKE        | UK           |
+| ZA1342    | GoldTown      | JOHANNESBURG | ZA           |
++-----------+---------------+--------------+--------------+
+7 rows in set (0.000 sec)
+
+MariaDB [themepark]> 
+MariaDB [themepark]> select distinct PARK_NAME from themepark t 
+    -> where exists (select distinct PARK_CODE from sales s where t.park_code = s.park_code;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 2
+MariaDB [themepark]> select distinct PARK_NAME from themepark t 
+    -> where exists (select distinct PARK_CODE from sales s where t.park_code = s.park_code);
++--------------+
+| PARK_NAME    |
++--------------+
+| FairyLand    |
+| PleasureLand |
+| GoldTown     |
++--------------+
+3 rows in set (0.001 sec)
+
+MariaDB [themepark]> select park_name, PARK_CODE
+    -> from themepark 
+    -> where not exists (select park_code from sales
+    -> where sales.park_code = themepark.park_code);
++---------------+-----------+
+| park_name     | PARK_CODE |
++---------------+-----------+
+| Efling        | NL1202    |
+| AdventurePort | SP4533    |
+| Labyrinthe    | SW2323    |
+| MiniLand      | UK2622    |
++---------------+-----------+
+4 rows in set (0.002 sec)
+
+MariaDB [themepark]> select distinct emp_fname, emp_lname
+    -> from employee natural join hours
+    -> where hour_rate > (select avg(hour_rate) from hours) and date_worked like '%2007-05%';
++-----------+-----------+
+| emp_fname | emp_lname |
++-----------+-----------+
+| Enrica    | Denver    |
+| Mirrelle  | Namowa    |
++-----------+-----------+
+2 rows in set (0.001 sec)
+
+MariaDB [themepark]> select park_code, park_name
+    -> from themepark natural join ticket 
+    -> where ticket_price > ( select avg(ticket_price) from ticket);
++-----------+---------------+
+| park_code | park_name     |
++-----------+---------------+
+| FR1001    | FairyLand     |
+| SP4533    | AdventurePort |
+| UK3452    | PleasureLand  |
+| UK3452    | PleasureLand  |
+| ZA1342    | GoldTown      |
++-----------+---------------+
+5 rows in set (0.001 sec)
+
+MariaDB [themepark]> select  emp_fname, emp_lname , (date_worked) ,
+    -> (select avg(hours_per_attract) from hours) as AVERAGE , 
+    -> hours_per_attract - (select avg(hours_per_attract) from hours)  as DIFFERENCE from employee natural join hours;
++-----------+------------+-------------+---------+------------+
+| emp_fname | emp_lname  | date_worked | AVERAGE | DIFFERENCE |
++-----------+------------+-------------+---------+------------+
+| Emma      | Calderdale | 2007-05-18  |  4.9091 |     1.0909 |
+| Emma      | Calderdale | 2007-05-20  |  4.9091 |     1.0909 |
+| Marshel   | Ricardo    | 2007-05-18  |  4.9091 |     1.0909 |
+| Arif      | Arshad     | 2007-05-23  |  4.9091 |    -1.9091 |
+| Arif      | Arshad     | 2007-05-21  |  4.9091 |     1.0909 |
+| Arif      | Arshad     | 2007-05-22  |  4.9091 |    -1.9091 |
+| Enrica    | Denver     | 2007-05-21  |  4.9091 |     1.0909 |
+| Enrica    | Denver     | 2007-05-22  |  4.9091 |     1.0909 |
+| Mirrelle  | Namowa     | 2007-05-18  |  4.9091 |    -1.9091 |
+| Mirrelle  | Namowa     | 2007-05-18  |  4.9091 |    -1.9091 |
+| Mirrelle  | Namowa     | 2007-05-19  |  4.9091 |     1.0909 |
++-----------+------------+-------------+---------+------------+
+11 rows in set (0.001 sec)
+
+MariaDB [themepark]> select distinct PARK_NAME from themepark t 
+    -> where exists (select distinct PARK_CODE from sales s where t.park_code = s.park_code);
++--------------+
+| PARK_NAME    |
++--------------+
+| FairyLand    |
+| PleasureLand |
+| GoldTown     |
++--------------+
+3 rows in set (0.001 sec)
+
+MariaDB [themepark]> select park_name, PARK_CODE
+    -> from themepark 
+    -> where not exists (select park_code from sales
+    -> where sales.park_code = themepark.park_code);
++---------------+-----------+
+| park_name     | PARK_CODE |
++---------------+-----------+
+| Efling        | NL1202    |
+| AdventurePort | SP4533    |
+| Labyrinthe    | SW2323    |
+| MiniLand      | UK2622    |
++---------------+-----------+
+4 rows in set (0.001 sec)
+
+MariaDB [themepark]> select distinct emp_lname , emp_fname ,sum(hours_per_attract) from employee natural join  hours where  date_worked like "%-05%" group by emp_fname , emp_lname , date_worked having sum(hours_per_attract) < (select avg(hours_per_attract) from hours) ;
++-----------+-----------+------------------------+
+| emp_lname | emp_fname | sum(hours_per_attract) |
++-----------+-----------+------------------------+
+| Arshad    | Arif      |                      3 |
++-----------+-----------+------------------------+
+1 row in set (0.001 sec)
+
+MariaDB [themepark]> select distinct emp_lname , emp_fname ,
+    -> sum(hours_per_attract) from employee natural join  hours
+    -> where  date_worked like "%-05%" group by emp_fname , emp_lname , date_worked 
+    -> having sum(hours_per_attract) < (select avg(hours_per_attract) from hours) ;
++-----------+-----------+------------------------+
+| emp_lname | emp_fname | sum(hours_per_attract) |
++-----------+-----------+------------------------+
+| Arshad    | Arif      |                      3 |
++-----------+-----------+------------------------+
+1 row in set (0.001 sec)
+
+MariaDB [themepark]> select park_code, park_name
+    -> from themepark natural join ticket 
+    -> where ticket_price > ( select avg(ticket_price) from ticket);
++-----------+---------------+
+| park_code | park_name     |
++-----------+---------------+
+| FR1001    | FairyLand     |
+| SP4533    | AdventurePort |
+| UK3452    | PleasureLand  |
+| UK3452    | PleasureLand  |
+| ZA1342    | GoldTown      |
++-----------+---------------+
+5 rows in set (0.001 sec)
+
+MariaDB [themepark]> select  emp_fname, emp_lname , (date_worked) ,
+    -> (select avg(hours_per_attract) from hours) as AVERAGE , 
+    -> hours_per_attract - (select avg(hours_per_attract) from hours)  as DIFFERENCE from employee natural join hours;
++-----------+------------+-------------+---------+------------+
+| emp_fname | emp_lname  | date_worked | AVERAGE | DIFFERENCE |
++-----------+------------+-------------+---------+------------+
+| Emma      | Calderdale | 2007-05-18  |  4.9091 |     1.0909 |
+| Emma      | Calderdale | 2007-05-20  |  4.9091 |     1.0909 |
+| Marshel   | Ricardo    | 2007-05-18  |  4.9091 |     1.0909 |
+| Arif      | Arshad     | 2007-05-23  |  4.9091 |    -1.9091 |
+| Arif      | Arshad     | 2007-05-21  |  4.9091 |     1.0909 |
+| Arif      | Arshad     | 2007-05-22  |  4.9091 |    -1.9091 |
+| Enrica    | Denver     | 2007-05-21  |  4.9091 |     1.0909 |
+| Enrica    | Denver     | 2007-05-22  |  4.9091 |     1.0909 |
+| Mirrelle  | Namowa     | 2007-05-18  |  4.9091 |    -1.9091 |
+| Mirrelle  | Namowa     | 2007-05-18  |  4.9091 |    -1.9091 |
+| Mirrelle  | Namowa     | 2007-05-19  |  4.9091 |     1.0909 |
++-----------+------------+-------------+---------+------------+
+11 rows in set (0.001 sec)
+
+MariaDB [themepark]> select distinct PARK_NAME from themepark t 
+    -> where exists (select distinct PARK_CODE from sales s where t.park_code = s.park_code);
++--------------+
+| PARK_NAME    |
++--------------+
+| FairyLand    |
+| PleasureLand |
+| GoldTown     |
++--------------+
+3 rows in set (0.001 sec)
+
+MariaDB [themepark]> select park_name, PARK_CODE
+    -> from themepark 
+    -> where not exists (select park_code from sales
+    -> where sales.park_code = themepark.park_code);
++---------------+-----------+
+| park_name     | PARK_CODE |
++---------------+-----------+
+| Efling        | NL1202    |
+| AdventurePort | SP4533    |
+| Labyrinthe    | SW2323    |
+| MiniLand      | UK2622    |
++---------------+-----------+
+4 rows in set (0.001 sec)
+
+MariaDB [themepark]> select park_name, PARK_CODE
+    -> from themepark 
+    -> where not exists (select park_code from sales
+    -> where sales.park_code = themepark.park_code);select park_name, PARK_CODE
++---------------+-----------+
+| park_name     | PARK_CODE |
++---------------+-----------+
+| Efling        | NL1202    |
+| AdventurePort | SP4533    |
+| Labyrinthe    | SW2323    |
+| MiniLand      | UK2622    |
++---------------+-----------+
+4 rows in set (0.001 sec)
+
+    -> from themepark 
+    -> where not exists (select park_code from sales
+    -> where sales.park_code = themepark.park_code);
++---------------+-----------+
+| park_name     | PARK_CODE |
++---------------+-----------+
+| Efling        | NL1202    |
+| AdventurePort | SP4533    |
+| Labyrinthe    | SW2323    |
+| MiniLand      | UK2622    |
++---------------+-----------+
+4 rows in set (0.001 sec)
+
+MariaDB [themepark]> select park_name, PARK_CODE
+    -> from themepark 
+    -> where not exists (select park_code from sales
+    -> where sales.park_code = themepark.park_code);
++---------------+-----------+
+| park_name     | PARK_CODE |
++---------------+-----------+
+| Efling        | NL1202    |
+| AdventurePort | SP4533    |
+| Labyrinthe    | SW2323    |
+| MiniLand      | UK2622    |
++---------------+-----------+
+4 rows in set (0.001 sec)
+
+MariaDB [themepark]> 
