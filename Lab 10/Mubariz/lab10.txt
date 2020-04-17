@@ -1,0 +1,260 @@
+MariaDB [(none)]> create database lab10
+    -> ;
+Query OK, 1 row affected (0.009 sec)
+
+MariaDB [(none)]> use lab10
+Database changed
+MariaDB [lab10]> create table users( user_id int, username varchar(255), password varchar(255) , email varchar(255));
+Query OK, 0 rows affected (0.079 sec)
+
+MariaDB [lab10]> create table summary(total_users int, yahoo int, hotmail int, gmail int);
+Query OK, 0 rows affected (0.049 sec)
+
+MariaDB [lab10]> insert into users values(1, abc123, def321, abc123@yahoo.com);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '@yahoo.com)' at line 1
+MariaDB [lab10]> insert into users values(1, 'abc123', 'def321', 'abc123@yahoo.com');
+Query OK, 1 row affected (0.056 sec)
+
+MariaDB [lab10]> insert into users values(2, 'xyz789', 'vbn123', 'xyz789@gmail.com');
+Query OK, 1 row affected (0.006 sec)
+
+MariaDB [lab10]> insert into users summary(1,2,1,0,1);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'summary(1,2,1,0,1)' at line 1
+MariaDB [lab10]> insert into users summary values(1,2,1,0,1);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'summary values(1,2,1,0,1)' at line 1
+MariaDB [lab10]> insert into summary values(1,2,1,0,1);
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+MariaDB [lab10]> select * from summary;
+Empty set (0.003 sec)
+
+MariaDB [lab10]> show tables;
++-----------------+
+| Tables_in_lab10 |
++-----------------+
+| summary         |
+| users           |
++-----------------+
+2 rows in set (0.003 sec)
+
+MariaDB [lab10]> show users;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'users' at line 1
+MariaDB [lab10]> select * from users;
++---------+----------+----------+------------------+
+| user_id | username | password | email            |
++---------+----------+----------+------------------+
+|       1 | abc123   | def321   | abc123@yahoo.com |
+|       2 | xyz789   | vbn123   | xyz789@gmail.com |
++---------+----------+----------+------------------+
+2 rows in set (0.000 sec)
+
+MariaDB [lab10]> insert into summary values(1,2,1,0,1);
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+MariaDB [lab10]> drop table summary;
+Query OK, 0 rows affected (0.034 sec)
+
+MariaDB [lab10]> create table summary(id int, total_users int, yahoo int, hotmail int, gmail int);
+Query OK, 0 rows affected (0.055 sec)
+
+MariaDB [lab10]> insert into summary values(1,2,1,0,1);
+Query OK, 1 row affected (0.006 sec)
+
+MariaDB [lab10]> delimiter ##
+MariaDB [lab10]> create procedure insertion_summary(In a, In b, In c, In d, In e)
+    -> begin
+    -> insert into summary values(a,b,c,d,e);
+    -> END##
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ' In b, In c, In d, In e)
+begin
+insert into summary values(a,b,c,d,e);
+END' at line 1
+MariaDB [lab10]> END ##
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'END' at line 1
+MariaDB [lab10]> delimiter ##
+MariaDB [lab10]> create procedure insertion_summary(In a, In b, In c, In d, In e)
+    -> begin
+    -> insert into insertion_summary values(a,b,c,d,e);
+    -> END ##
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ' In b, In c, In d, In e)
+begin
+insert into insertion_summary values(a,b,c,d,e);
+' at line 1
+MariaDB [lab10]> delimiter ##
+MariaDB [lab10]> begin
+    -> ##
+Query OK, 0 rows affected (0.000 sec)
+
+MariaDB [lab10]> delimiter ##
+MariaDB [lab10]> create procedure insertion_summary(In a, In b, In c, In d, In e)
+    -> begin
+    -> create procedure insertion_summary(id, total_users, yahoo, hotmail, gmail) values(In a, In b, In c, In d, In e)
+    -> ;
+    -> END ##
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ' In b, In c, In d, In e)
+begin
+create procedure insertion_summary(id, total_user' at line 1
+MariaDB [lab10]> select * from summary;
+    -> ##
++------+-------------+-------+---------+-------+
+| id   | total_users | yahoo | hotmail | gmail |
++------+-------------+-------+---------+-------+
+|    1 |           2 |     1 |       0 |     1 |
++------+-------------+-------+---------+-------+
+1 row in set (0.000 sec)
+
+MariaDB [lab10]> CREATE PROCEDURE insert_in_summary(IN a INT,IN b INT,IN c INT,IN d INT,IN e INT)
+    ->      BEGIN
+    ->      insert into summary(id,TOTAL_USERS,YAHOO,HOTMAIL,GMAIL) values (a,b,c,d,e);
+    ->     END##
+Query OK, 0 rows affected (0.030 sec)
+
+MariaDB [lab10]> call insert_in summary(2,1,3,4,5)##
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'summary(2,1,3,4,5)' at line 1
+MariaDB [lab10]> call insert_in_summary(2,1,3,4,5)
+    -> ##
+Query OK, 1 row affected (0.007 sec)
+
+MariaDB [lab10]> select * from summary##
++------+-------------+-------+---------+-------+
+| id   | total_users | yahoo | hotmail | gmail |
++------+-------------+-------+---------+-------+
+|    1 |           2 |     1 |       0 |     1 |
+|    2 |           1 |     3 |       4 |     5 |
++------+-------------+-------+---------+-------+
+2 rows in set (0.000 sec)
+
+MariaDB [lab10]> select * from users;
+    -> ##
++---------+----------+----------+------------------+
+| user_id | username | password | email            |
++---------+----------+----------+------------------+
+|       1 | abc123   | def321   | abc123@yahoo.com |
+|       2 | xyz789   | vbn123   | xyz789@gmail.com |
++---------+----------+----------+------------------+
+2 rows in set (0.000 sec)
+
+MariaDB [lab10]> CREATE PROCEDURE insert_in_users(IN a INT,IN b INT,IN c INT,IN d INT,IN e INT)
+    ->      BEGIN
+    ->      insert into users(user_id,username,password,email) values (a,b,c,d,e);
+    ->     END##
+Query OK, 0 rows affected (0.018 sec)
+
+MariaDB [lab10]> select * from users;
+    -> ##
++---------+----------+----------+------------------+
+| user_id | username | password | email            |
++---------+----------+----------+------------------+
+|       1 | abc123   | def321   | abc123@yahoo.com |
+|       2 | xyz789   | vbn123   | xyz789@gmail.com |
++---------+----------+----------+------------------+
+2 rows in set (0.000 sec)
+
+MariaDB [lab10]> call insert_in_users(2, 'Mubi', 'Mubariz', 'lolool', 'mub@mu.com')##
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+MariaDB [lab10]> call insert_in_users(2, 'Mubariz', 'lolool', 'mub@mu.com')##
+ERROR 1318 (42000): Incorrect number of arguments for PROCEDURE lab10.insert_in_users; expected 5, got 4
+MariaDB [lab10]> CREATE PROCEDURE insert_in_users1(IN a INT,IN b INT,IN c INT,IN d INT)
+    ->      BEGIN
+    ->      insert into users(user_id,username,password,email) values (a,b,c,d);
+    ->     END##
+Query OK, 0 rows affected (0.016 sec)
+
+MariaDB [lab10]>      insert into users(user_id,username,password,email) values (12, 'Mubariz', 'hello', 'mub@mub.com')
+    -> ;
+    -> ##
+Query OK, 1 row affected (0.006 sec)
+
+MariaDB [lab10]> select * from users;
+    -> ##
++---------+----------+----------+------------------+
+| user_id | username | password | email            |
++---------+----------+----------+------------------+
+|       1 | abc123   | def321   | abc123@yahoo.com |
+|       2 | xyz789   | vbn123   | xyz789@gmail.com |
+|      12 | Mubariz  | hello    | mub@mub.com      |
++---------+----------+----------+------------------+
+3 rows in set (0.000 sec)
+
+MariaDB [lab10]> create procedure average_yahoo()
+    -> begin
+    -> select avg(yahoo) from summary;
+    -> wnd ##
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 4
+MariaDB [lab10]> create procedure average_yahoo()
+    -> begin
+    -> select avg(yahoo) from summary;
+    -> end ##
+Query OK, 0 rows affected (0.015 sec)
+
+MariaDB [lab10]> call average_yahoo();
+    -> ##
++------------+
+| avg(yahoo) |
++------------+
+|     2.0000 |
++------------+
+1 row in set (0.002 sec)
+
+Query OK, 0 rows affected (0.009 sec)
+
+MariaDB [lab10]> create procedure min_gmail()
+    -> begin
+    -> select min(gmail) from summary;
+    -> end ##
+Query OK, 0 rows affected (0.016 sec)
+
+MariaDB [lab10]> call min_gmail()##
++------------+
+| min(gmail) |
++------------+
+|          1 |
++------------+
+1 row in set (0.002 sec)
+
+Query OK, 0 rows affected (0.008 sec)
+
+MariaDB [lab10]> create procedure max_hotmail()
+    -> begin
+    -> select max(hotmail) from summary;
+    -> end ##
+Query OK, 0 rows affected (0.018 sec)
+
+MariaDB [lab10]> call max_hotmail() ##
++--------------+
+| max(hotmail) |
++--------------+
+|            4 |
++--------------+
+1 row in set (0.001 sec)
+
+Query OK, 0 rows affected (0.006 sec)
+
+MariaDB [lab10]> create procedure updation()
+    -> begin
+    -> update summary
+    -> set total_users = total_users + 1
+    -> where hotmail >= yahoo;
+    -> END ##
+Query OK, 0 rows affected (0.017 sec)
+
+MariaDB [lab10]> select * from summary;
+    -> ##
++------+-------------+-------+---------+-------+
+| id   | total_users | yahoo | hotmail | gmail |
++------+-------------+-------+---------+-------+
+|    1 |           2 |     1 |       0 |     1 |
+|    2 |           1 |     3 |       4 |     5 |
++------+-------------+-------+---------+-------+
+2 rows in set (0.000 sec)
+
+MariaDB [lab10]> call procedure updation() ##
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'procedure updation()' at line 1
+MariaDB [lab10]> CREATE PROCEDURE insert_in_users1(IN a INT,IN b INT,IN c INT,IN d INT)
+    ->      BEGIN
+    ->      insert into users(user_id,username,password,email) values (a,b,c,d);
+    ->     END##CREATE PROCEDURE insert_in_users1(IN a INT,IN b INT,IN c INT,IN d INT)
+ERROR 1304 (42000): PROCEDURE insert_in_users1 already exists
+    ->      BEGIN
+    ->      insert into users(user_id,username,password,email) values (a,b,c,d);
+    ->     END##
+ERROR 1304 (42000): PROCEDURE insert_in_users1 already exists
+MariaDB [lab10]> 

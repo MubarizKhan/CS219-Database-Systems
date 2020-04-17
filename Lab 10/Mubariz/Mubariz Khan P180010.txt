@@ -1,0 +1,101 @@
+Mubariz Ahmed Khan P180010 (B)
+
+Logfile is also in this directory
+
+
+Q1========================================================
+MariaDB [lab10]> CREATE PROCEDURE insert_in_summary(IN a INT,IN b INT,IN c INT,IN d INT,IN e INT)
+    ->      BEGIN
+    ->      insert into summary(id,TOTAL_USERS,YAHOO,HOTMAIL,GMAIL) values (a,b,c,d,e);
+    ->     END##
+Query OK, 0 rows affected (0.030 sec)
+
+Q2-------------------------------------------------------------------------------------------
+ariaDB [lab10]> CREATE PROCEDURE insert_in_users1(IN a INT,IN b INT,IN c INT,IN d INT)
+    ->      BEGIN
+    ->      insert into users(user_id,username,password,email) values (a,b,c,d);
+    ->     END##
+Query OK, 0 rows affected (0.016 sec)
+
+MariaDB [lab10]>      insert into users(user_id,username,password,email) values (12, 'Mubariz', 'hello', 'mub@mub.com')
+    -> ;
+    -> ##
+Query OK, 1 row affected (0.006 sec)
+
+MariaDB [lab10]> select * from users;
+    -> ##
++---------+----------+----------+------------------+
+| user_id | username | password | email            |
++---------+----------+----------+------------------+
+|       1 | abc123   | def321   | abc123@yahoo.com |
+|       2 | xyz789   | vbn123   | xyz789@gmail.com |
+|      12 | Mubariz  | hello    | mub@mub.com      |
++---------+----------+----------+------------------+
+3 rows in set (0.000 sec)
+
+
+
+
+Q3------------------------------------------------------------------------------------------------
+
+
+ariaDB [lab10]> create procedure average_yahoo()
+    -> begin
+    -> select avg(yahoo) from summary;
+    -> end ##
+Query OK, 0 rows affected (0.015 sec)
+
+MariaDB [lab10]> call average_yahoo();
+    -> ##
++------------+
+| avg(yahoo) |
++------------+
+|     2.0000 |
++------------+
+1 row in set (0.002 sec)
+
+Query OK, 0 rows affected (0.009 sec)
+
+
+Q4--------------------------------------------------------------------------------------------------
+MariaDB [lab10]> create procedure min_gmail()
+    -> begin
+    -> select min(gmail) from summary;
+    -> end ##
+Query OK, 0 rows affected (0.016 sec)
+
+MariaDB [lab10]> call min_gmail()##
++------------+
+| min(gmail) |
++------------+
+|          1 |
++------------+
+1 row in set (0.002 sec)
+
+Query OK, 0 rows affected (0.008 sec)
+
+Q5--------------------------------------------------------------------------------
+MariaDB [lab10]> create procedure max_hotmail()
+    -> begin
+    -> select max(hotmail) from summary;
+    -> end ##
+Query OK, 0 rows affected (0.018 sec)
+
+MariaDB [lab10]> call max_hotmail() ##
++--------------+
+| max(hotmail) |
++--------------+
+|            4 |
++--------------+
+1 row in set (0.001 sec)
+
+Query OK, 0 rows affected (0.006 sec)
+Q6----------------------------------------------------------------------------------------
+MariaDB [lab10]> create procedure updation()
+    -> begin
+    -> update summary
+    -> set total_users = total_users + 1
+    -> where hotmail >= yahoo;
+    -> END ##
+Query OK, 0 rows affected (0.017 sec)
+
